@@ -1,14 +1,5 @@
 let https = require('https');
-
-
-let printMessage = (username, badgeCount, points) => {
-  let message = `${username} has ${badgeCount} total badge(s) and ${points} points in javaScript`;
-  console.log(message);
-};
-
-let printError = (error) => {
-    console.error(error);
-};
+let print = require('./printer');
 
 let get = (username) => {
 
@@ -23,18 +14,18 @@ let get = (username) => {
       if (response.statusCode === 200) {
         try {
           let profile =  JSON.parse(body);
-          printMessage(username, profile.badges.length, profile.points.JavaScript);
+          print.message(username, profile.badges.length, profile.points.JavaScript);
         } catch (error) {
-          printError(error);
+          print.error(error);
         }
       } else {
-        printError(` Message: There was an error getting the profile for ${username} ${https.STATUS_CODES[response.statusCode]}` );
+        print.error(` Message: There was an error getting the profile for ${username} ${https.STATUS_CODES[response.statusCode]}` );
       }
 
     });
   });
 
-  request.on('error', (error) => printError(error));
+  request.on('error', (error) => print.error(error));
 };
 
 module.exports.get = get;
